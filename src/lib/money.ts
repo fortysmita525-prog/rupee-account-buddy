@@ -23,8 +23,8 @@ export const fmtDate = (iso: string | null | undefined) => {
 };
 
 export const addMonths = (iso: string, months: number) => {
-  const [y, m, d] = iso.split("-").map(Number);
-  const base = new Date(Date.UTC(y, (m ?? 1) - 1, 1));
+  const [y, m, d] = iso.split("-").map(Number) as (number | undefined)[];
+  const base = new Date(Date.UTC(y ?? 1970, (m ?? 1) - 1, 1));
   base.setUTCMonth(base.getUTCMonth() + months);
   const daysInMonth = new Date(
     Date.UTC(base.getUTCFullYear(), base.getUTCMonth() + 1, 0),
