@@ -14,16 +14,202 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      money_records: {
+        Row: {
+          created_at: string
+          date_started: string
+          demand_note: string | null
+          id: string
+          is_demo: boolean
+          monthly_extra_amount: number
+          monthly_extra_start_date: string | null
+          notes: string | null
+          person_id: string
+          principal_amount: number
+          principal_demand_date: string | null
+          principal_demand_status: Database["public"]["Enums"]["demand_status"]
+          principal_due_date: string | null
+          principal_repayment_condition: Database["public"]["Enums"]["repayment_condition"]
+          type: Database["public"]["Enums"]["money_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date_started: string
+          demand_note?: string | null
+          id?: string
+          is_demo?: boolean
+          monthly_extra_amount?: number
+          monthly_extra_start_date?: string | null
+          notes?: string | null
+          person_id: string
+          principal_amount: number
+          principal_demand_date?: string | null
+          principal_demand_status?: Database["public"]["Enums"]["demand_status"]
+          principal_due_date?: string | null
+          principal_repayment_condition?: Database["public"]["Enums"]["repayment_condition"]
+          type: Database["public"]["Enums"]["money_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date_started?: string
+          demand_note?: string | null
+          id?: string
+          is_demo?: boolean
+          monthly_extra_amount?: number
+          monthly_extra_start_date?: string | null
+          notes?: string | null
+          person_id?: string
+          principal_amount?: number
+          principal_demand_date?: string | null
+          principal_demand_status?: Database["public"]["Enums"]["demand_status"]
+          principal_due_date?: string | null
+          principal_repayment_condition?: Database["public"]["Enums"]["repayment_condition"]
+          type?: Database["public"]["Enums"]["money_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "money_records_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people: {
+        Row: {
+          created_at: string
+          id: string
+          is_demo: boolean
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          currency: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          is_demo: boolean
+          money_record_id: string
+          notes: string | null
+          person_id: string
+          transaction_date: string
+          transaction_type: Database["public"]["Enums"]["txn_type"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          money_record_id: string
+          notes?: string | null
+          person_id: string
+          transaction_date: string
+          transaction_type: Database["public"]["Enums"]["txn_type"]
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          money_record_id?: string
+          notes?: string | null
+          person_id?: string
+          transaction_date?: string
+          transaction_type?: Database["public"]["Enums"]["txn_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_money_record_id_fkey"
+            columns: ["money_record_id"]
+            isOneToOne: false
+            referencedRelation: "money_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      delete_demo_data: { Args: never; Returns: undefined }
+      seed_demo_data: { Args: never; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      demand_status:
+        | "not_demanded"
+        | "demanded"
+        | "partially_paid"
+        | "fully_paid"
+      money_type: "taken" | "given"
+      repayment_condition: "on_demand" | "specific_date" | "flexible"
+      txn_type: "principal_payment" | "monthly_extra" | "other" | "adjustment"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +336,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      demand_status: [
+        "not_demanded",
+        "demanded",
+        "partially_paid",
+        "fully_paid",
+      ],
+      money_type: ["taken", "given"],
+      repayment_condition: ["on_demand", "specific_date", "flexible"],
+      txn_type: ["principal_payment", "monthly_extra", "other", "adjustment"],
+    },
   },
 } as const
