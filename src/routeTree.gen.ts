@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGivenRouteImport } from './routes/_authenticated/given'
+import { Route as AuthenticatedPeopleRouteImport } from './routes/_authenticated/people'
 import { Route as AuthenticatedTakenRouteImport } from './routes/_authenticated/taken'
 
 const IndexRoute = IndexRouteImport.update({
@@ -40,6 +41,11 @@ const AuthenticatedGivenRoute = AuthenticatedGivenRouteImport.update({
   path: '/given',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPeopleRoute = AuthenticatedPeopleRouteImport.update({
+  id: '/people',
+  path: '/people',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTakenRoute = AuthenticatedTakenRouteImport.update({
   id: '/taken',
   path: '/taken',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/given': typeof AuthenticatedGivenRoute
+  '/people': typeof AuthenticatedPeopleRoute
   '/taken': typeof AuthenticatedTakenRoute
 }
 export interface FileRoutesByTo {
@@ -58,6 +65,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/given': typeof AuthenticatedGivenRoute
+  '/people': typeof AuthenticatedPeopleRoute
   '/taken': typeof AuthenticatedTakenRoute
 }
 export interface FileRoutesById {
@@ -67,13 +75,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/given': typeof AuthenticatedGivenRoute
+  '/_authenticated/people': typeof AuthenticatedPeopleRoute
   '/_authenticated/taken': typeof AuthenticatedTakenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/given' | '/taken'
+  fullPaths: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/given' | '/taken'
+  to: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken'
   id:
     | '__root__'
     | '/'
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/given'
+    | '/_authenticated/people'
     | '/_authenticated/taken'
   fileRoutesById: FileRoutesById
 }
@@ -127,6 +137,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGivenRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/people': {
+      id: '/_authenticated/people'
+      path: '/people'
+      fullPath: '/people'
+      preLoaderRoute: typeof AuthenticatedPeopleRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/taken': {
       id: '/_authenticated/taken'
       path: '/taken'
@@ -140,12 +157,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGivenRoute: typeof AuthenticatedGivenRoute
+  AuthenticatedPeopleRoute: typeof AuthenticatedPeopleRoute
   AuthenticatedTakenRoute: typeof AuthenticatedTakenRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGivenRoute: AuthenticatedGivenRoute,
+  AuthenticatedPeopleRoute: AuthenticatedPeopleRoute,
   AuthenticatedTakenRoute: AuthenticatedTakenRoute,
 }
 
