@@ -79,7 +79,7 @@ type Row = Record<string, unknown>;
 export function useSaveRow(table: "people" | "money_records" | "transactions") {
   const invalidate = useInvalidateAll();
   return useMutation({
-    mutationFn: async ({ id, values }: { id?: string; values: Row }) => {
+    mutationFn: async ({ id, values }: { id?: string | undefined; values: Row }) => {
       if (id) {
         const { data, error } = await supabase
           .from(table)

@@ -275,7 +275,10 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
   const selectedSummary = selectedRecord ? summarise(selectedRecord, transactions) : null;
 
   async function submitPerson() {
-    if (!personForm.name.trim()) return toast.error("Name is required");
+    if (!personForm.name.trim()) {
+      toast.error("Name is required");
+      return;
+    }
     const saved = (await savePerson.mutateAsync({
       id: personEdit?.id,
       values: {
@@ -291,13 +294,30 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
 
   async function submitRecord() {
     const principal = parseAmount(recordForm.principal_amount);
-    if (!recordForm.person_id) return toast.error("Choose a person");
-    if (principal <= 0) return toast.error("Principal amount must be greater than zero");
-    if (!recordForm.date_started) return toast.error("Date is required");
+    if (!recordForm.person_id) {
+      toast.error("Choose a person");
+      return;
+    }
+    if (principal <= 0) {
+      toast.error("Principal amount must be greater than zero");
+      return;
+    }
+    if (!recordForm.date_started) {
+      toast.error("Date is required");
+      return;
+    }
     const extra = parseAmount(recordForm.monthly_extra_amount);
-    if (extra < 0) return toast.error("Monthly extra cannot be negative");
-    if (recordForm.principal_repayment_condition === "specific_date" && !recordForm.principal_due_date)
-      return toast.error("Choose the specific repayment date");
+    if (extra < 0) {
+      toast.error("Monthly extra cannot be negative");
+      return;
+    }
+    if (
+      recordForm.principal_repayment_condition === "specific_date" &&
+      !recordForm.principal_due_date
+    ) {
+      toast.error("Choose the specific repayment date");
+      return;
+    }
 
     await saveRecord.mutateAsync({
       id: recordEdit?.id,
@@ -322,12 +342,24 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
 
   async function submitPayment(force = false) {
     const amount = parseAmount(paymentForm.amount);
-    if (!paymentForm.money_record_id) return toast.error("Choose a money record");
-    if (amount <= 0) return toast.error("Amount must be greater than zero");
-    if (!paymentForm.transaction_date) return toast.error("Date is required");
+    if (!paymentForm.money_record_id) {
+      toast.error("Choose a money record");
+      return;
+    }
+    if (amount <= 0) {
+      toast.error("Amount must be greater than zero");
+      return;
+    }
+    if (!paymentForm.transaction_date) {
+      toast.error("Date is required");
+      return;
+    }
 
     const record = records.find((r) => r.id === paymentForm.money_record_id);
-    if (!record) return toast.error("Record not found");
+    if (!record) {
+      toast.error("Record not found");
+      return;
+    }
 
     if (paymentForm.transaction_type === "principal_payment" && !force) {
       const s = summarise(record, transactions.filter((t) => t.id !== txnEdit?.id));
@@ -336,7 +368,9 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
           title: "Payment exceeds remaining principal",
           description: `Remaining principal is ${inr(s.remainingPrincipal)} but you entered ${inr(amount)}. The remaining principal will be capped at ₹0 and will never go negative. Continue?`,
           confirmLabel: "Yes, record it",
-          onConfirm: () => submitPayment(true),
+          onConfirm: () => {
+            void submitPayment(true);
+          },
         });
         return;
       }
