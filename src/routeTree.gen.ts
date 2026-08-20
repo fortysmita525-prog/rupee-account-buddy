@@ -16,6 +16,9 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedGivenRouteImport } from './routes/_authenticated/given'
 import { Route as AuthenticatedPeopleRouteImport } from './routes/_authenticated/people'
 import { Route as AuthenticatedTakenRouteImport } from './routes/_authenticated/taken'
+import { Route as AuthenticatedTransactionsRouteImport } from './routes/_authenticated/transactions'
+import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -51,6 +54,21 @@ const AuthenticatedTakenRoute = AuthenticatedTakenRouteImport.update({
   path: '/taken',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTransactionsRoute = AuthenticatedTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRemindersRoute = AuthenticatedRemindersRouteImport.update({
+  id: '/reminders',
+  path: '/reminders',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,6 +77,9 @@ export interface FileRoutesByFullPath {
   '/given': typeof AuthenticatedGivenRoute
   '/people': typeof AuthenticatedPeopleRoute
   '/taken': typeof AuthenticatedTakenRoute
+  '/transactions': typeof AuthenticatedTransactionsRoute
+  '/reminders': typeof AuthenticatedRemindersRoute
+  '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -67,6 +88,9 @@ export interface FileRoutesByTo {
   '/given': typeof AuthenticatedGivenRoute
   '/people': typeof AuthenticatedPeopleRoute
   '/taken': typeof AuthenticatedTakenRoute
+  '/transactions': typeof AuthenticatedTransactionsRoute
+  '/reminders': typeof AuthenticatedRemindersRoute
+  '/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,12 +101,15 @@ export interface FileRoutesById {
   '/_authenticated/given': typeof AuthenticatedGivenRoute
   '/_authenticated/people': typeof AuthenticatedPeopleRoute
   '/_authenticated/taken': typeof AuthenticatedTakenRoute
+  '/_authenticated/transactions': typeof AuthenticatedTransactionsRoute
+  '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken'
+  fullPaths: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken' | '/transactions' | '/reminders' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken'
+  to: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken' | '/transactions' | '/reminders' | '/settings'
   id:
     | '__root__'
     | '/'
@@ -92,6 +119,9 @@ export interface FileRouteTypes {
     | '/_authenticated/given'
     | '/_authenticated/people'
     | '/_authenticated/taken'
+    | '/_authenticated/transactions'
+    | '/_authenticated/reminders'
+    | '/_authenticated/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -100,7 +130,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
 }
 
-declare module '@tanstack/react-router' {
+declare module '@tanstack.react-router' {
   interface FileRoutesByPath {
     '/': {
       id: '/'
@@ -151,6 +181,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTakenRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/transactions': {
+      id: '/_authenticated/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AuthenticatedTransactionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reminders': {
+      id: '/_authenticated/reminders'
+      path: '/reminders'
+      fullPath: '/reminders'
+      preLoaderRoute: typeof AuthenticatedRemindersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -159,6 +210,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedGivenRoute: typeof AuthenticatedGivenRoute
   AuthenticatedPeopleRoute: typeof AuthenticatedPeopleRoute
   AuthenticatedTakenRoute: typeof AuthenticatedTakenRoute
+  AuthenticatedTransactionsRoute: typeof AuthenticatedTransactionsRoute
+  AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -166,6 +220,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedGivenRoute: AuthenticatedGivenRoute,
   AuthenticatedPeopleRoute: AuthenticatedPeopleRoute,
   AuthenticatedTakenRoute: AuthenticatedTakenRoute,
+  AuthenticatedTransactionsRoute: AuthenticatedTransactionsRoute,
+  AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
