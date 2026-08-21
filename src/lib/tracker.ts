@@ -110,8 +110,9 @@ const sum = (list: Transaction[], types: TxnType[] | TxnType) => {
 };
 
 export function summarise(record: MoneyRecord, allTransactions: Transaction[]): RecordSummary {
+  // Include transactions that either belong to the record directly or reference it via related_record_id.
   const transactions = allTransactions
-    .filter((t) => t.money_record_id === record.id)
+    .filter((t) => t.money_record_id === record.id || t.related_record_id === record.id)
     .slice()
     .sort((a, b) => a.transaction_date.localeCompare(b.transaction_date));
 
