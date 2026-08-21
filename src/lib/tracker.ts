@@ -3,7 +3,15 @@ import { addMonths, todayISO } from "./money";
 export type MoneyType = "taken" | "given";
 export type RepaymentCondition = "on_demand" | "specific_date" | "flexible";
 export type DemandStatus = "not_demanded" | "demanded" | "partially_paid" | "fully_paid";
-export type TxnType = "principal_payment" | "monthly_extra" | "other" | "adjustment";
+
+export type TxnType =
+  | "principal"
+  | "monthly_extra"
+  | "advance_given"
+  | "advance_received"
+  | "principal_adjustment"
+  | "extra_adjustment"
+  | "other";
 
 export type Person = {
   id: string;
@@ -40,8 +48,12 @@ export type Transaction = {
   amount: number;
   transaction_date: string;
   notes: string | null;
+  related_transaction_id?: string | null;
+  related_record_id?: string | null;
+  period?: string | null; // e.g. '2026-08' for monthly-extra period
   is_demo: boolean;
   created_at: string;
+  updated_at?: string | null;
 };
 
 export const MONEY_TYPE_LABEL: Record<MoneyType, string> = {
@@ -63,10 +75,13 @@ export const DEMAND_LABEL: Record<DemandStatus, string> = {
 };
 
 export const TXN_LABEL: Record<TxnType, string> = {
-  principal_payment: "Principal Payment",
+  principal: "Principal Payment",
   monthly_extra: "Monthly Extra",
+  advance_given: "Advance Given",
+  advance_received: "Advance Received",
+  principal_adjustment: "Principal Adjustment",
+  extra_adjustment: "Extra Adjustment",
   other: "Other",
-  adjustment: "Adjustment",
 };
 
 export type ExtraStatus = "upcoming" | "due_today" | "overdue" | "none";
@@ -74,11 +89,12 @@ export type ExtraStatus = "upcoming" | "due_today" | "overdue" | "none";
 export type RecordSummary = {
   record: MoneyRecord;
   transactions: Transaction[];
-  /** Sum of principal_payment transactions only. */
+  /** Sum of principal transactions (principal + principal_adjustment). */
   principalPaid: number;
   /** Sum of monthly_extra transactions only. NEVER reduces principal. */
   extraPaid: number;
   otherPaid: number;
+  advanceTotal: number;
   remainingPrincipal: number;
   extrasPaidCount: number;
   nextExtraDue: string | null;
@@ -86,8 +102,12 @@ export type RecordSummary = {
   isSettled: boolean;
 };
 
-const sum = (list: Transaction[], type: TxnType) =>
-  list.filter((t) => t.transaction_type === type).reduce((acc, t) => acc + Number(t.amount), 0);
+const sum = (list: Transaction[], types: TxnType[] | TxnType) => {
+  const wanted = Array.isArray(types) ? types : [types];
+  return list
+    .filter((t) => wanted.includes(t.transaction_type))
+    .reduce((acc, t) => acc + Number(t.amount), 0);
+};
 
 export function summarise(record: MoneyRecord, allTransactions: Transaction[]): RecordSummary {
   const transactions = allTransactions
@@ -95,9 +115,14 @@ export function summarise(record: MoneyRecord, allTransactions: Transaction[]): 
     .slice()
     .sort((a, b) => a.transaction_date.localeCompare(b.transaction_date));
 
-  const principalPaid = sum(transactions, "principal_payment") + sum(transactions, "adjustment");
-  const extraPaid = sum(transactions, "monthly_extra");
+  // Principal reductions come only from 'principal' and explicit 'principal_adjustment'
+  const principalPaid = sum(transactions, ["principal", "principal_adjustment"]);
+  // Monthly extras and extra adjustments are counted separately and do NOT reduce principal
+  const extraPaid = sum(transactions, ["monthly_extra", "extra_adjustment"]);
   const otherPaid = sum(transactions, "other");
+  // Advances are tracked separately
+  const advanceTotal = sum(transactions, ["advance_given", "advance_received"]);
+
   const remainingPrincipal = Math.max(0, Number(record.principal_amount) - principalPaid);
 
   const extrasPaidCount = transactions.filter((t) => t.transaction_type === "monthly_extra").length;
@@ -119,6 +144,7 @@ export function summarise(record: MoneyRecord, allTransactions: Transaction[]): 
     principalPaid,
     extraPaid,
     otherPaid,
+    advanceTotal,
     remainingPrincipal,
     extrasPaidCount,
     nextExtraDue,
