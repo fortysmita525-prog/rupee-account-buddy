@@ -9,6 +9,7 @@ import {
   Settings,
   Users,
   Wallet,
+  Trash2,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useDialogs } from "@/components/tracker-dialogs";
+import { useTracker } from "@/lib/data";
 import "@/styles/sci-fi.css";
 
 const NAV = [
@@ -86,6 +88,8 @@ export function AddMenu({ className, label = "Add Money" }: { className?: string
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const dialogs = useDialogs();
+  const { people } = useTracker();
 
   return (
     <div className="sci-fi min-h-screen bg-background">
@@ -133,7 +137,36 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="hidden text-sm text-muted-foreground lg:block">
             Private personal record keeping · Indian Rupees (₹)
           </p>
-          <AddMenu label="Add Money" />
+          <div className="flex items-center gap-3">
+            <AddMenu label="Add Money" />
+
+            {/* Remove Person quick menu in header */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="destructive" className="rounded-full">
+                  <Trash2 className="size-4" /> Remove
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Remove a person</DropdownMenuLabel>
+                {people.length === 0 ? (
+                  <DropdownMenuItem disabled>No people</DropdownMenuItem>
+                ) : (
+                  people.map((p: any) => (
+                    <DropdownMenuItem
+                      key={p.id}
+                      onClick={() => dialogs.deletePerson(p)}
+                    >
+                      {p.name}
+                    </DropdownMenuItem>
+                  ))
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => dialogs.addPerson()}>Add a person</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+          </div>
         </header>
 
         <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-5 lg:px-8 lg:pb-12">{children}</main>
