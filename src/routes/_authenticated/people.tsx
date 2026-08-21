@@ -8,6 +8,14 @@ import { useDialogs } from "@/components/tracker-dialogs";
 import { useTracker } from "@/lib/data";
 import { inr } from "@/lib/money";
 import { summariseAll } from "@/lib/tracker";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authenticated/people")({
   head: () => ({
@@ -28,7 +36,9 @@ function PeoplePage() {
   const { people, records, transactions, isLoading } = useTracker();
   const dialogs = useDialogs();
   const [q, setQ] = useState("");
-  const [removeOpen, setRemoveOpen] = useState(false);
+
+  // Remove person modal state
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
   const [removePersonId, setRemovePersonId] = useState("");
 
   const rows = useMemo(() => {
@@ -48,24 +58,24 @@ function PeoplePage() {
       });
   }, [people, records, transactions, q]);
 
-  function openRemoveUI() {
-    setRemoveOpen(true);
+  function openRemoveModal() {
+    setRemovePersonId("");
+    setRemoveModalOpen(true);
   }
 
   function cancelRemove() {
-    setRemoveOpen(false);
+    setRemoveModalOpen(false);
     setRemovePersonId("");
   }
 
   function confirmRemove() {
     if (!removePersonId) {
-      // simple feedback
       window.alert("Choose a person to remove");
       return;
     }
     const person = people.find((p) => p.id === removePersonId);
     if (!person) return;
-    // This will open the confirmation dialog from the dialogs provider
+    // Use the existing deletePerson dialog flow for confirmation + deletion
     dialogs.deletePerson(person);
     cancelRemove();
   }
@@ -84,33 +94,9 @@ function PeoplePage() {
             <Plus className="size-4" /> Add Person
           </Button>
 
-          {/* Remove person inline UI */}
-          {!removeOpen ? (
-            <Button variant="ghost" className="rounded-full" onClick={openRemoveUI}>
-              Remove Person
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <select
-                value={removePersonId}
-                onChange={(e) => setRemovePersonId(e.target.value)}
-                className="rounded-md border px-2 py-1 bg-background"
-              >
-                <option value="">Select person</option>
-                {people.map((p: any) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-              <Button variant="destructive" onClick={confirmRemove}>
-                Remove
-              </Button>
-              <Button variant="ghost" onClick={cancelRemove}>
-                Cancel
-              </Button>
-            </div>
-          )}
+          <Button variant="ghost" className="rounded-full" onClick={openRemoveModal}>
+            Remove Person
+          </Button>
         </div>
       </div>
 
@@ -170,6 +156,38 @@ function PeoplePage() {
           ))}
         </div>
       )}
+
+      {/* Remove Person modal */}
+      <Dialog open={removeModalOpen} onOpenChange={setRemoveModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Remove Person</DialogTitle>
+            <DialogDescription>Choose a person to remove. This will open a confirmation dialog before deleting.</DialogDescription>
+          </DialogHeader>
+          <div className="mt-4">
+            <select
+              value={removePersonId}
+              onChange={(e) => setRemovePersonId(e.target.value)}
+              className="w-full rounded-md border px-2 py-2"
+            >
+              <option value="">Select person</option>
+              {people.map((p: any) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={cancelRemove}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmRemove}>
+              Remove
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
