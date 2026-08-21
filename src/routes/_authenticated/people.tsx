@@ -37,7 +37,7 @@ function PeoplePage() {
   const dialogs = useDialogs();
   const [q, setQ] = useState("");
 
-  // Remove person modal state
+  // Remove person modal state (kept for bulk actions & header shortcut)
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
   const [removePersonId, setRemovePersonId] = useState("");
 
@@ -125,39 +125,53 @@ function PeoplePage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {rows.map(({ person, count, owe, owed }) => (
-            <Link
-              key={person.id}
-              to="/people/$personId"
-              params={{ personId: person.id }}
-              className="surface group p-5 transition-shadow hover:shadow-lift"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                  <UserRound className="size-5" />
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate font-semibold group-hover:underline">{person.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {person.phone || `${count} record${count === 1 ? "" : "s"}`}
-                  </p>
+            <div key={person.id} className="relative">
+              <Link
+                to="/people/$personId"
+                params={{ personId: person.id }}
+                className="surface group p-5 transition-shadow hover:shadow-lift block"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                    <UserRound className="size-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold group-hover:underline">{person.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {person.phone || `${count} record${count === 1 ? "" : "s"}`}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <div className="rounded-lg bg-owe-soft p-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-owe">I owe</p>
-                  <p className="money-figure mt-1 font-semibold text-owe">{inr(owe)}</p>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-lg bg-owe-soft p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-owe">I owe</p>
+                    <p className="money-figure mt-1 font-semibold text-owe">{inr(owe)}</p>
+                  </div>
+                  <div className="rounded-lg bg-owed-soft p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-owed">Owes me</p>
+                    <p className="money-figure mt-1 font-semibold text-owed">{inr(owed)}</p>
+                  </div>
                 </div>
-                <div className="rounded-lg bg-owed-soft p-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-owed">Owes me</p>
-                  <p className="money-figure mt-1 font-semibold text-owed">{inr(owed)}</p>
-                </div>
-              </div>
-            </Link>
+              </Link>
+
+              {/* Per-person remove button (prevents navigation) */}
+              <button
+                className="absolute right-3 top-3 rounded-md p-1 text-destructive bg-destructive/5 hover:bg-destructive/10"
+                title={`Remove ${person.name}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  dialogs.deletePerson(person);
+                }}
+              >
+                <Trash2 className="size-4" />
+              </button>
+            </div>
           ))}
         </div>
       )}
 
-      {/* Remove Person modal */}
+      {/* Remove Person modal (bulk/header) */}
       <Dialog open={removeModalOpen} onOpenChange={setRemoveModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
