@@ -27,25 +27,25 @@ function TransactionsPage() {
   const rows = useMemo(() => {
     let out = transactions.slice();
 
-    // text search over notes or money record name
+    // text search over notes, transaction_type or amount
     const needle = q.trim().toLowerCase();
     if (needle) {
       out = out.filter(
         (t: any) =>
           (t.notes ?? "").toLowerCase().includes(needle) ||
-          (t.type ?? "").toLowerCase().includes(needle) ||
+          (t.transaction_type ?? "").toLowerCase().includes(needle) ||
           (t.amount ?? "").toString().includes(needle),
       );
     }
 
     if (personFilter) out = out.filter((t: any) => t.person_id === personFilter);
-    if (typeFilter) out = out.filter((t: any) => t.type === typeFilter);
+    if (typeFilter) out = out.filter((t: any) => t.transaction_type === typeFilter);
 
-    if (dateFrom) out = out.filter((t: any) => new Date(t.date) >= new Date(dateFrom));
-    if (dateTo) out = out.filter((t: any) => new Date(t.date) <= new Date(dateTo));
+    if (dateFrom) out = out.filter((t: any) => new Date(t.transaction_date) >= new Date(dateFrom));
+    if (dateTo) out = out.filter((t: any) => new Date(t.transaction_date) <= new Date(dateTo));
 
-    if (sortBy === "date_desc") out.sort((a: any, b: any) => +new Date(b.date) - +new Date(a.date));
-    if (sortBy === "date_asc") out.sort((a: any, b: any) => +new Date(a.date) - +new Date(b.date));
+    if (sortBy === "date_desc") out.sort((a: any, b: any) => +new Date(b.transaction_date) - +new Date(a.transaction_date));
+    if (sortBy === "date_asc") out.sort((a: any, b: any) => +new Date(a.transaction_date) - +new Date(b.transaction_date));
     if (sortBy === "amount_desc") out.sort((a: any, b: any) => b.amount - a.amount);
     if (sortBy === "amount_asc") out.sort((a: any, b: any) => a.amount - b.amount);
 
@@ -89,10 +89,13 @@ function TransactionsPage() {
 
         <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="rounded-md border px-2 py-1">
           <option value="">All types</option>
-          <option value="principal_payment">Principal Payment</option>
+          <option value="principal">Principal Payment</option>
           <option value="monthly_extra">Monthly Extra</option>
+          <option value="advance_given">Advance Given</option>
+          <option value="advance_received">Advance Received</option>
+          <option value="principal_adjustment">Principal Adjustment</option>
+          <option value="extra_adjustment">Extra Adjustment</option>
           <option value="other">Other</option>
-          <option value="adjustment">Adjustment</option>
         </select>
 
         <label className="flex items-center gap-2 text-sm">
@@ -135,15 +138,18 @@ function TransactionsPage() {
             <tbody>
               {rows.map((t: any) => {
                 const person = people.find((p: any) => p.id === t.person_id);
-                const record = records.find((r: any) => r.id === t.record_id);
+                const record = records.find((r: any) => r.id === t.money_record_id || r.id === t.related_record_id);
+                const direction =
+                  t.direction ??
+                  (t.transaction_type === "advance_given" ? "Out" : t.transaction_type === "advance_received" ? "In" : "—");
                 return (
                   <tr key={t.id} className="border-t">
-                    <td className="py-2">{new Date(t.date).toLocaleDateString()}</td>
+                    <td className="py-2">{new Date(t.transaction_date).toLocaleDateString()}</td>
                     <td>{person?.name ?? "—"}</td>
-                    <td>{record?.title ?? record?.note ?? "—"}</td>
-                    <td>{t.type?.replaceAll("_", " ")}</td>
+                    <td>{record?.notes ?? record?.id ?? "—"}</td>
+                    <td>{t.transaction_type?.replaceAll("_", " ")}</td>
                     <td className="font-semibold">{inr(t.amount)}</td>
-                    <td>{t.direction ?? "—"}</td>
+                    <td>{direction}</td>
                     <td>{t.notes ?? "—"}</td>
                     <td className="text-right">
                       <div className="flex items-center justify-end gap-2">
