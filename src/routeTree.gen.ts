@@ -15,10 +15,10 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGivenRouteImport } from './routes/_authenticated/given'
 import { Route as AuthenticatedPeopleRouteImport } from './routes/_authenticated/people'
-import { Route as AuthenticatedTakenRouteImport } from './routes/_authenticated/taken'
-import { Route as AuthenticatedTransactionsRouteImport } from './routes/_authenticated/transactions'
 import { Route as AuthenticatedRemindersRouteImport } from './routes/_authenticated/reminders'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedTakenRouteImport } from './routes/_authenticated/taken'
+import { Route as AuthenticatedTransactionsRouteImport } from './routes/_authenticated/transactions'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -49,16 +49,6 @@ const AuthenticatedPeopleRoute = AuthenticatedPeopleRouteImport.update({
   path: '/people',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedTakenRoute = AuthenticatedTakenRouteImport.update({
-  id: '/taken',
-  path: '/taken',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedTransactionsRoute = AuthenticatedTransactionsRouteImport.update({
-  id: '/transactions',
-  path: '/transactions',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedRemindersRoute = AuthenticatedRemindersRouteImport.update({
   id: '/reminders',
   path: '/reminders',
@@ -69,6 +59,17 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTakenRoute = AuthenticatedTakenRouteImport.update({
+  id: '/taken',
+  path: '/taken',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTransactionsRoute =
+  AuthenticatedTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -76,10 +77,10 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/given': typeof AuthenticatedGivenRoute
   '/people': typeof AuthenticatedPeopleRoute
-  '/taken': typeof AuthenticatedTakenRoute
-  '/transactions': typeof AuthenticatedTransactionsRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/taken': typeof AuthenticatedTakenRoute
+  '/transactions': typeof AuthenticatedTransactionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -87,10 +88,10 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/given': typeof AuthenticatedGivenRoute
   '/people': typeof AuthenticatedPeopleRoute
-  '/taken': typeof AuthenticatedTakenRoute
-  '/transactions': typeof AuthenticatedTransactionsRoute
   '/reminders': typeof AuthenticatedRemindersRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/taken': typeof AuthenticatedTakenRoute
+  '/transactions': typeof AuthenticatedTransactionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -100,16 +101,34 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/given': typeof AuthenticatedGivenRoute
   '/_authenticated/people': typeof AuthenticatedPeopleRoute
-  '/_authenticated/taken': typeof AuthenticatedTakenRoute
-  '/_authenticated/transactions': typeof AuthenticatedTransactionsRoute
   '/_authenticated/reminders': typeof AuthenticatedRemindersRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/taken': typeof AuthenticatedTakenRoute
+  '/_authenticated/transactions': typeof AuthenticatedTransactionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken' | '/transactions' | '/reminders' | '/settings'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/given'
+    | '/people'
+    | '/reminders'
+    | '/settings'
+    | '/taken'
+    | '/transactions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/given' | '/people' | '/taken' | '/transactions' | '/reminders' | '/settings'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/given'
+    | '/people'
+    | '/reminders'
+    | '/settings'
+    | '/taken'
+    | '/transactions'
   id:
     | '__root__'
     | '/'
@@ -118,10 +137,10 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/given'
     | '/_authenticated/people'
-    | '/_authenticated/taken'
-    | '/_authenticated/transactions'
     | '/_authenticated/reminders'
     | '/_authenticated/settings'
+    | '/_authenticated/taken'
+    | '/_authenticated/transactions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -130,7 +149,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
 }
 
-declare module '@tanstack.react-router' {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
       id: '/'
@@ -174,20 +193,6 @@ declare module '@tanstack.react-router' {
       preLoaderRoute: typeof AuthenticatedPeopleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/taken': {
-      id: '/_authenticated/taken'
-      path: '/taken'
-      fullPath: '/taken'
-      preLoaderRoute: typeof AuthenticatedTakenRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/transactions': {
-      id: '/_authenticated/transactions'
-      path: '/transactions'
-      fullPath: '/transactions'
-      preLoaderRoute: typeof AuthenticatedTransactionsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/reminders': {
       id: '/_authenticated/reminders'
       path: '/reminders'
@@ -202,6 +207,20 @@ declare module '@tanstack.react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/taken': {
+      id: '/_authenticated/taken'
+      path: '/taken'
+      fullPath: '/taken'
+      preLoaderRoute: typeof AuthenticatedTakenRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/transactions': {
+      id: '/_authenticated/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AuthenticatedTransactionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -209,20 +228,20 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGivenRoute: typeof AuthenticatedGivenRoute
   AuthenticatedPeopleRoute: typeof AuthenticatedPeopleRoute
-  AuthenticatedTakenRoute: typeof AuthenticatedTakenRoute
-  AuthenticatedTransactionsRoute: typeof AuthenticatedTransactionsRoute
   AuthenticatedRemindersRoute: typeof AuthenticatedRemindersRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTakenRoute: typeof AuthenticatedTakenRoute
+  AuthenticatedTransactionsRoute: typeof AuthenticatedTransactionsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGivenRoute: AuthenticatedGivenRoute,
   AuthenticatedPeopleRoute: AuthenticatedPeopleRoute,
-  AuthenticatedTakenRoute: AuthenticatedTakenRoute,
-  AuthenticatedTransactionsRoute: AuthenticatedTransactionsRoute,
   AuthenticatedRemindersRoute: AuthenticatedRemindersRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTakenRoute: AuthenticatedTakenRoute,
+  AuthenticatedTransactionsRoute: AuthenticatedTransactionsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
