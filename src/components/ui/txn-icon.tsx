@@ -2,20 +2,21 @@ import { DollarSign, CreditCard, Gift, RefreshCcw, PlusCircle, MinusCircle } fro
 import type { TxnType } from "@/lib/tracker";
 
 export function TxnIcon({ type, className = "size-5" }: { type: TxnType; className?: string }) {
+  const base = className + " sci-txn-icon";
   switch (type) {
     case "principal":
-      return <MinusCircle className={className + " text-owe"} />;
+      return <MinusCircle className={base + " sci-principal"} />;
     case "monthly_extra":
-      return <CreditCard className={className + " text-muted-foreground"} />;
+      return <CreditCard className={base + " sci-extra"} />;
     case "advance_given":
-      return <Gift className={className + " text-owed"} />;
+      return <Gift className={base + " sci-advance-given"} />;
     case "advance_received":
-      return <Gift className={className + " text-owe"} />;
+      return <Gift className={base + " sci-advance-received"} />;
     case "principal_adjustment":
-      return <RefreshCcw className={className + " text-primary"} />;
+      return <RefreshCcw className={base + " sci-adjust"} />;
     case "extra_adjustment":
-      return <RefreshCcw className={className + " text-primary"} />;
+      return <RefreshCcw className={base + " sci-adjust"} />;
     default:
-      return <DollarSign className={className} />;
+      return <DollarSign className={base + " sci-other"} />;
   }
 }

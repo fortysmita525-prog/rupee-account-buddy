@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0" stop-color="#04061A"/>
+      <stop offset="1" stop-color="#091224"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="640" fill="url(#g1)" />
+  <!-- Header -->
+  <g transform="translate(40,28)">
+    <rect width="1120" height="64" rx="10" fill="#0B1024" opacity="0.6"/>
+    <text x="20" y="40" fill="#7ef3ff" font-size="20" font-family="Inter, sans-serif">My Money Tracker — Sci‑Fi Theme</text>
+    <rect x="940" y="12" width="160" height="40" rx="8" fill="#7ef3ff"/>
+    <text x="1000" y="38" fill="#04061A" font-size="14" font-family="Inter, sans-serif" font-weight="700" text-anchor="middle">Add Money</text>
+  </g>
+
+  <!-- Stat cards -->
+  <g transform="translate(40,110)">
+    <rect x="0" y="0" width="320" height="120" rx="12" fill="#0F1530" stroke="#7ef3ff" stroke-opacity="0.06"/>
+    <text x="20" y="28" fill="#CDEFFF" font-size="12">I OWE</text>
+    <text x="20" y="72" fill="#FFFFFF" font-size="28" font-family="monospace">₹ 24,500</text>
+
+    <rect x="360" y="0" width="320" height="120" rx="12" fill="#0F1530" stroke="#A36CFF" stroke-opacity="0.06"/>
+    <text x="380" y="28" fill="#CDB3FF" font-size="12">OWED TO ME</text>
+    <text x="380" y="72" fill="#FFFFFF" font-size="28" font-family="monospace">₹ 18,200</text>
+
+    <rect x="720" y="0" width="320" height="120" rx="12" fill="#0F1530" stroke="#9AB0FF" stroke-opacity="0.06"/>
+    <text x="740" y="28" fill="#CDEFFF" font-size="12">MONTHLY EXTRA</text>
+    <text x="740" y="72" fill="#FFFFFF" font-size="28" font-family="monospace">₹ 3,000</text>
+  </g>
+
+  <!-- Recent activity -->
+  <g transform="translate(40,260)">
+    <rect width="800" height="320" rx="12" fill="#07102a" opacity="0.6"/>
+    <text x="20" y="28" fill="#7ef3ff" font-size="16">Recent Activity</text>
+
+    <!-- list items -->
+    <g transform="translate(20,48)">
+      <g transform="translate(0,0)">
+        <rect width="760" height="48" rx="8" fill="#0b1230" opacity="0.4"/>
+        <text x="60" y="30" fill="#fff" font-size="14">Principal Payment — Rahul</text>
+        <text x="680" y="30" fill="#7ef3ff" font-size="14" font-family="monospace" text-anchor="end">₹ 5,000</text>
+      </g>
+      <g transform="translate(0,64)">
+        <rect width="760" height="48" rx="8" fill="#0b1230" opacity="0.35"/>
+        <text x="60" y="30" fill="#fff" font-size="14">Monthly Extra — Priya</text>
+        <text x="680" y="30" fill="#A36CFF" font-size="14" font-family="monospace" text-anchor="end">₹ 1,000</text>
+      </g>
+      <g transform="translate(0,128)">
+        <rect width="760" height="48" rx="8" fill="#0b1230" opacity="0.35"/>
+        <text x="60" y="30" fill="#fff" font-size="14">Advance Given — Amit</text>
+        <text x="680" y="30" fill="#7affb2" font-size="14" font-family="monospace" text-anchor="end">₹ 10,000</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right column summary -->
+  <g transform="translate(860,110)">
+    <rect width="280" height="470" rx="12" fill="#07102a" opacity="0.6"/>
+    <text x="20" y="28" fill="#7ef3ff" font-size="16">Overview</text>
+    <text x="20" y="64" fill="#CDEFFF" font-size="12">Active records: 4</text>
+    <text x="20" y="88" fill="#CDEFFF" font-size="12">Principal paid: ₹ 36,000</text>
+    <text x="20" y="112" fill="#CDEFFF" font-size="12">Extra paid: ₹ 6,000</text>
+
+    <rect x="20" y="140" width="240" height="120" rx="8" fill="#0b1230" opacity="0.4"/>
+    <text x="140" y="200" fill="#fff" font-size="12" text-anchor="middle">Next due: 2026-09-01</text>
+  </g>
+
+</svg>

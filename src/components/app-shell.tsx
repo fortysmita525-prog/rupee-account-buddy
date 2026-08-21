@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useDialogs } from "@/components/tracker-dialogs";
+import "@/styles/sci-fi.css";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -47,7 +48,7 @@ export function AddMenu({ className, label = "Add Money" }: { className?: string
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel>What happened?</DropdownMenuLabel>
+        <DropdownMenuLabel>Add a money record</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => addRecord("taken")}>
           <ArrowDownLeft className="text-owe" /> I Took Money
         </DropdownMenuItem>
@@ -87,7 +88,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="sci-fi min-h-screen bg-background">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar px-4 py-6 lg:flex">
         <Link to="/dashboard" className="mb-8 flex items-center gap-2.5 px-2">
           <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">

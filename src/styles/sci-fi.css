@@ -1,0 +1,59 @@
+/* Sci‑Fi theme overrides for the tracker app.
+   This file scopes styles under the `.sci-fi` root class so changes are opt‑in.
+*/
+
+.sci-fi {
+  --sci-bg-1: #070720; /* deep space */
+  --sci-bg-2: linear-gradient(90deg, rgba(4,6,23,1) 0%, rgba(9,12,36,1) 100%);
+  --sci-accent: #7ef3ff; /* cyan */
+  --sci-accent-2: #a36cff; /* purple */
+  --sci-owe: #ff7a7a; /* red-ish */
+  --sci-owed: #7affb2; /* green-ish */
+  --sci-card-bg: rgba(15,18,40,0.6);
+  --sci-border: rgba(127,127,255,0.08);
+  --sci-glow: 0 8px 24px rgba(100, 100, 255, 0.08);
+  color-scheme: dark;
+  background: var(--sci-bg-2);
+}
+
+.sci-fi .bg-background { background: var(--sci-bg-1) !important; }
+.sci-fi .bg-card { background: var(--sci-card-bg) !important; }
+.sci-fi .border { border-color: var(--sci-border) !important; }
+
+/* Stat card specific */
+.sci-fi .sci-card {
+  border: 1px solid rgba(126,243,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: var(--sci-glow);
+  position: relative;
+  overflow: hidden;
+}
+.sci-fi .sci-card::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(120deg, rgba(126,243,255,0.06), rgba(163,108,255,0.04));
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.sci-fi .mono-number { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace; }
+
+/* Transaction icons */
+.sci-fi .sci-txn-icon { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
+.sci-fi .sci-principal { color: var(--sci-owe) !important; }
+.sci-fi .sci-extra { color: var(--sci-accent) !important; }
+.sci-fi .sci-advance-given { color: var(--sci-owed) !important; transform: rotate(-12deg); }
+.sci-fi .sci-advance-received { color: var(--sci-owe) !important; transform: rotate(12deg); }
+.sci-fi .sci-adjust { color: var(--sci-accent-2) !important; }
+.sci-fi .sci-other { color: #9aa7ff !important; }
+
+/* Empty state */
+.sci-fi .sci-empty { background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border-color: rgba(126,243,255,0.06); }
+
+/* Buttons and primary elements */
+.sci-fi .btn-primary, .sci-fi .bg-primary { background: linear-gradient(90deg,var(--sci-accent),var(--sci-accent-2)); color: black !important; }
+
+/* subtle link underline glow */
+.sci-fi a { text-decoration: none; }
+.sci-fi a:hover { text-decoration: underline; text-decoration-color: rgba(126,243,255,0.25); }
