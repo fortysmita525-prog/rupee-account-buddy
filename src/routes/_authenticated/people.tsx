@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, Search, UserRound, Trash2 } from "lucide-react";
+import { Plus, Search, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/bits";
@@ -8,14 +8,6 @@ import { useDialogs } from "@/components/tracker-dialogs";
 import { useTracker } from "@/lib/data";
 import { inr } from "@/lib/money";
 import { summariseAll } from "@/lib/tracker";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authenticated/people")({
   head: () => ({
@@ -37,10 +29,6 @@ function PeoplePage() {
   const dialogs = useDialogs();
   const [q, setQ] = useState("");
 
-  // Remove person modal state (kept for bulk actions & header shortcut)
-  const [removeModalOpen, setRemoveModalOpen] = useState(false);
-  const [removePersonId, setRemovePersonId] = useState("");
-
   const rows = useMemo(() => {
     const summaries = summariseAll(records, transactions);
     const needle = q.trim().toLowerCase();
@@ -58,28 +46,6 @@ function PeoplePage() {
       });
   }, [people, records, transactions, q]);
 
-  function openRemoveModal() {
-    setRemovePersonId("");
-    setRemoveModalOpen(true);
-  }
-
-  function cancelRemove() {
-    setRemoveModalOpen(false);
-    setRemovePersonId("");
-  }
-
-  function confirmRemove() {
-    if (!removePersonId) {
-      window.alert("Choose a person to remove");
-      return;
-    }
-    const person = people.find((p) => p.id === removePersonId);
-    if (!person) return;
-    // Use the existing deletePerson dialog flow for confirmation + deletion
-    dialogs.deletePerson(person);
-    cancelRemove();
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -89,15 +55,9 @@ function PeoplePage() {
             A person can have many separate money records — each stays independent.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button className="rounded-full" onClick={() => dialogs.addPerson()}>
-            <Plus className="size-4" /> Add Person
-          </Button>
-
-          <Button variant="destructive" className="rounded-full" onClick={openRemoveModal} aria-label="Remove person">
-            <Trash2 className="size-4" /> Remove Person
-          </Button>
-        </div>
+        <Button className="rounded-full" onClick={() => dialogs.addPerson()}>
+          <Plus className="size-4" /> Add Person
+        </Button>
       </div>
 
       <div className="relative max-w-sm">
@@ -125,83 +85,37 @@ function PeoplePage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {rows.map(({ person, count, owe, owed }) => (
-            <div key={person.id} className="relative">
-              <Link
-                to="/people/$personId"
-                params={{ personId: person.id }}
-                className="surface group p-5 transition-shadow hover:shadow-lift block"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                    <UserRound className="size-5" />
-                  </span>
-                  <div className="min-w-0">
-                    <p className="truncate font-semibold group-hover:underline">{person.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {person.phone || `${count} record${count === 1 ? "" : "s"}`}
-                    </p>
-                  </div>
+            <Link
+              key={person.id}
+              to="/people/$personId"
+              params={{ personId: person.id }}
+              className="surface group p-5 transition-shadow hover:shadow-lift"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                  <UserRound className="size-5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate font-semibold group-hover:underline">{person.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {person.phone || `${count} record${count === 1 ? "" : "s"}`}
+                  </p>
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-lg bg-owe-soft p-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-owe">I owe</p>
-                    <p className="money-figure mt-1 font-semibold text-owe">{inr(owe)}</p>
-                  </div>
-                  <div className="rounded-lg bg-owed-soft p-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-owed">Owes me</p>
-                    <p className="money-figure mt-1 font-semibold text-owed">{inr(owed)}</p>
-                  </div>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-owe-soft p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-owe">I owe</p>
+                  <p className="money-figure mt-1 font-semibold text-owe">{inr(owe)}</p>
                 </div>
-              </Link>
-
-              {/* Per-person remove button (prevents navigation) */}
-              <button
-                className="absolute right-3 top-3 rounded-md p-1 text-destructive bg-destructive/5 hover:bg-destructive/10"
-                title={`Remove ${person.name}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  dialogs.deletePerson(person);
-                }}
-              >
-                <Trash2 className="size-4" />
-              </button>
-            </div>
+                <div className="rounded-lg bg-owed-soft p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-owed">Owes me</p>
+                  <p className="money-figure mt-1 font-semibold text-owed">{inr(owed)}</p>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       )}
-
-      {/* Remove Person modal (bulk/header) */}
-      <Dialog open={removeModalOpen} onOpenChange={setRemoveModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Remove Person</DialogTitle>
-            <DialogDescription>Choose a person to remove. This will open a confirmation dialog before deleting.</DialogDescription>
-          </DialogHeader>
-          <div className="mt-4">
-            <select
-              value={removePersonId}
-              onChange={(e) => setRemovePersonId(e.target.value)}
-              className="w-full rounded-md border px-2 py-2"
-            >
-              <option value="">Select person</option>
-              {people.map((p: any) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={cancelRemove}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmRemove}>
-              Remove
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

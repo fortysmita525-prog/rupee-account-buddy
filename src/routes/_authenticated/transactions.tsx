@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Trash2, Edit, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { useTracker } from "@/lib/data";
 import { inr } from "@/lib/money";
 import { supabase } from "@/integrations/supabase/client";
+import { useDialogs } from "@/components/tracker-dialogs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authenticated/transactions")({
   head: () => ({ meta: [{ title: "Transactions — My Money Tracker" }] }),
@@ -15,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/transactions")({
 
 function TransactionsPage() {
   const { transactions = [], people = [], records = [], isLoading, refetch } = useTracker();
+  const dialogs = useDialogs();
   const [q, setQ] = useState("");
   const [personFilter, setPersonFilter] = useState<string | "">("");
   const [typeFilter, setTypeFilter] = useState<string | "">("");
@@ -23,6 +26,8 @@ function TransactionsPage() {
   const [sortBy, setSortBy] = useState<"date_desc" | "date_asc" | "amount_desc" | "amount_asc">(
     "date_desc",
   );
+
+  const [viewTxn, setViewTxn] = useState<any | null>(null);
 
   const rows = useMemo(() => {
     let out = transactions.slice();
@@ -153,12 +158,12 @@ function TransactionsPage() {
                     <td>{t.notes ?? "—"}</td>
                     <td className="text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Link to="/transactions/$id" params={{ id: t.id }} className="p-1" title="View">
+                        <Button variant="ghost" className="p-1" title="View" onClick={() => setViewTxn(t)}>
                           <Eye className="size-4" />
-                        </Link>
-                        <Link to="/transactions/$id/edit" params={{ id: t.id }} className="p-1" title="Edit">
+                        </Button>
+                        <Button variant="ghost" className="p-1" title="Edit" onClick={() => dialogs.editTransaction(t)}>
                           <Edit className="size-4" />
-                        </Link>
+                        </Button>
                         <Button variant="ghost" onClick={() => handleDelete(t.id)} title="Delete" className="p-1">
                           <Trash2 className="size-4" />
                         </Button>
@@ -171,6 +176,29 @@ function TransactionsPage() {
           </table>
         </div>
       )}
+
+      {/* Transaction view dialog to avoid relying on dynamic routes */}
+      <Dialog open={!!viewTxn} onOpenChange={() => setViewTxn(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Transaction</DialogTitle>
+            <DialogDescription>Details for the selected transaction.</DialogDescription>
+          </DialogHeader>
+          {viewTxn ? (
+            <div className="space-y-3">
+              <p><strong>Date:</strong> {new Date(viewTxn.transaction_date).toLocaleDateString()}</p>
+              <p><strong>Type:</strong> {(viewTxn.transaction_type ?? "").replaceAll("_", " ")}</p>
+              <p><strong>Person:</strong> {people.find((p: any) => p.id === viewTxn.person_id)?.name ?? "—"}</p>
+              <p><strong>Amount:</strong> {inr(viewTxn.amount)}</p>
+              <p><strong>Notes:</strong> {viewTxn.notes ?? "—"}</p>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setViewTxn(null)}>Close</Button>
+            <Button onClick={() => { if (viewTxn) { dialogs.editTransaction(viewTxn); setViewTxn(null); } }}>Edit</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
