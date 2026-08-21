@@ -1,17 +1,18 @@
 /* Sci‑Fi theme overrides for the tracker app.
    This file scopes styles under the `.sci-fi` root class so changes are opt‑in.
+   Adjusted to a "bolder glow" visual style per request.
 */
 
 .sci-fi {
-  --sci-bg-1: #070720; /* deep space */
-  --sci-bg-2: linear-gradient(90deg, rgba(4,6,23,1) 0%, rgba(9,12,36,1) 100%);
-  --sci-accent: #7ef3ff; /* cyan */
-  --sci-accent-2: #a36cff; /* purple */
-  --sci-owe: #ff7a7a; /* red-ish */
-  --sci-owed: #7affb2; /* green-ish */
-  --sci-card-bg: rgba(15,18,40,0.6);
-  --sci-border: rgba(127,127,255,0.08);
-  --sci-glow: 0 8px 24px rgba(100, 100, 255, 0.08);
+  --sci-bg-1: #060615; /* deeper space */
+  --sci-bg-2: linear-gradient(90deg, rgba(3,5,18,1) 0%, rgba(8,10,30,1) 100%);
+  --sci-accent: #6ff3ff; /* slightly brighter cyan */
+  --sci-accent-2: #b074ff; /* richer purple */
+  --sci-owe: #ff8b8b; /* warmer red-ish */
+  --sci-owed: #7fffcf; /* green-ish */
+  --sci-card-bg: rgba(18,22,46,0.64);
+  --sci-border: rgba(163,108,255,0.12);
+  --sci-glow: 0 16px 48px rgba(108,84,255,0.14); /* stronger glow */
   color-scheme: dark;
   background: var(--sci-bg-2);
 }
@@ -22,8 +23,8 @@
 
 /* Stat card specific */
 .sci-fi .sci-card {
-  border: 1px solid rgba(126,243,255,0.06);
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(126,243,255,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
   box-shadow: var(--sci-glow);
   position: relative;
   overflow: hidden;
@@ -32,28 +33,38 @@
   content: "";
   position: absolute;
   inset: -2px;
-  background: linear-gradient(120deg, rgba(126,243,255,0.06), rgba(163,108,255,0.04));
+  background: linear-gradient(120deg, rgba(111,243,255,0.10), rgba(176,108,255,0.08));
   mix-blend-mode: screen;
-  opacity: 0.6;
+  opacity: 0.85;
   pointer-events: none;
+  filter: blur(8px);
 }
 .sci-fi .mono-number { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace; }
 
 /* Transaction icons */
-.sci-fi .sci-txn-icon { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
-.sci-fi .sci-principal { color: var(--sci-owe) !important; }
-.sci-fi .sci-extra { color: var(--sci-accent) !important; }
-.sci-fi .sci-advance-given { color: var(--sci-owed) !important; transform: rotate(-12deg); }
-.sci-fi .sci-advance-received { color: var(--sci-owe) !important; transform: rotate(12deg); }
-.sci-fi .sci-adjust { color: var(--sci-accent-2) !important; }
-.sci-fi .sci-other { color: #9aa7ff !important; }
+.sci-fi .sci-txn-icon { filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6)); transform-origin: center; }
+.sci-fi .sci-principal { color: var(--sci-owe) !important; transform: translateY(0) scale(1.02); }
+.sci-fi .sci-extra { color: var(--sci-accent) !important; transform: translateY(-1px) scale(1.02); }
+.sci-fi .sci-advance-given { color: var(--sci-owed) !important; transform: rotate(-14deg) scale(1.03); }
+.sci-fi .sci-advance-received { color: var(--sci-owe) !important; transform: rotate(14deg) scale(1.03); }
+.sci-fi .sci-adjust { color: var(--sci-accent-2) !important; transform: translateY(-2px) scale(1.02); }
+.sci-fi .sci-other { color: #9ab7ff !important; }
 
 /* Empty state */
-.sci-fi .sci-empty { background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border-color: rgba(126,243,255,0.06); }
+.sci-fi .sci-empty { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.007)); border-color: rgba(126,243,255,0.06); box-shadow: 0 8px 30px rgba(112,90,255,0.06); }
 
 /* Buttons and primary elements */
-.sci-fi .btn-primary, .sci-fi .bg-primary { background: linear-gradient(90deg,var(--sci-accent),var(--sci-accent-2)); color: black !important; }
+.sci-fi .btn-primary, .sci-fi .bg-primary {
+  background: linear-gradient(90deg,var(--sci-accent),var(--sci-accent-2));
+  color: rgba(4,6,23,0.95) !important;
+  box-shadow: 0 8px 24px rgba(99,108,255,0.12);
+}
 
 /* subtle link underline glow */
 .sci-fi a { text-decoration: none; }
-.sci-fi a:hover { text-decoration: underline; text-decoration-color: rgba(126,243,255,0.25); }
+.sci-fi a:hover { text-decoration: underline; text-decoration-color: rgba(126,243,255,0.32); }
+
+/* small utility tweaks for better sci-fi feel */
+.sci-fi .shadow-soft { box-shadow: 0 8px 22px rgba(90,80,180,0.06); }
+.sci-fi .border-sidebar-border { border-color: rgba(120,100,255,0.06); }
+.sci-fi .bg-sidebar { background: linear-gradient(180deg, rgba(6,8,20,0.95), rgba(8,10,28,0.9)); }
