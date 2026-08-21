@@ -37,7 +37,7 @@ const MOBILE_NAV = NAV.filter((n) =>
   ["/dashboard", "/people", "/taken", "/given", "/transactions"].includes(n.to),
 );
 
-export function AddMenu({ className, label = "Add Record" }: { className?: string; label?: string }) {
+export function AddMenu({ className, label = "Add Money" }: { className?: string; label?: string }) {
   const { addRecord, recordPayment, addPerson } = useDialogs();
   return (
     <DropdownMenu>
@@ -47,20 +47,32 @@ export function AddMenu({ className, label = "Add Record" }: { className?: strin
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel>Add a money record</DropdownMenuLabel>
+        <DropdownMenuLabel>What happened?</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => addRecord("taken")}>
-          <ArrowDownLeft className="text-owe" /> Money Taken From Someone
+          <ArrowDownLeft className="text-owe" /> I Took Money
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => addRecord("given")}>
-          <ArrowUpRight className="text-owed" /> Money Given To Someone
+          <ArrowUpRight className="text-owed" /> I Gave Money
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Record a payment</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => recordPayment({ type: "principal_payment" })}>
-          <Wallet /> Principal Payment
+        <DropdownMenuItem onClick={() => recordPayment({ type: "advance_given" })}>
+          <Users /> I Gave an Advance
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => recordPayment({ type: "advance_received" })}>
+          <Users /> I Received an Advance
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => recordPayment({ type: "principal" })}>
+          <Wallet /> I Paid Principal
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => recordPayment({ type: "monthly_extra" })}>
-          <Receipt /> Monthly Extra Payment
+          <Receipt /> I Paid Monthly Extra
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => recordPayment({ type: "principal" })}>
+          <Wallet /> I Received Principal
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => recordPayment({ type: "monthly_extra" })}>
+          <Receipt /> I Received Monthly Extra
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => addPerson()}>
@@ -120,7 +132,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="hidden text-sm text-muted-foreground lg:block">
             Private personal record keeping · Indian Rupees (₹)
           </p>
-          <AddMenu label="Add Record" />
+          <AddMenu label="Add Money" />
         </header>
 
         <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-5 lg:px-8 lg:pb-12">{children}</main>
