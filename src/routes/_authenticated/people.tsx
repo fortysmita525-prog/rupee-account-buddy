@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, Search, UserRound } from "lucide-react";
+import { Plus, Search, UserRound, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/bits";
@@ -94,8 +94,8 @@ function PeoplePage() {
             <Plus className="size-4" /> Add Person
           </Button>
 
-          <Button variant="ghost" className="rounded-full" onClick={openRemoveModal}>
-            Remove Person
+          <Button variant="destructive" className="rounded-full" onClick={openRemoveModal} aria-label="Remove person">
+            <Trash2 className="size-4" /> Remove Person
           </Button>
         </div>
       </div>
