@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <rect width="1200" height="640" fill="#060615" />
+  <g transform="translate(40,28)">
+    <text x="20" y="40" fill="#7ef3ff" font-size="20" font-family="Inter, sans-serif">Transactions — Sci‑Fi Theme</text>
+  </g>
+
+  <g transform="translate(40,90)">
+    <rect width="1120" height="480" rx="12" fill="#07102a"/>
+    <text x="20" y="36" fill="#7ef3ff" font-size="16">Recent Transactions</text>
+    <g transform="translate(20,64)">
+      <rect width="1080" height="48" rx="8" fill="#0b1230"/>
+      <text x="60" y="32" fill="#fff">2026-08-01 — Advance Given — Rahul — ₹10,000</text>
+    </g>
+    <g transform="translate(20,124)">
+      <rect width="1080" height="48" rx="8" fill="#0b1230"/>
+      <text x="60" y="32" fill="#fff">2026-08-01 — Monthly Extra — Priya — ₹1,000</text>
+    </g>
+  </g>
+</svg>

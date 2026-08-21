@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <rect width="1200" height="640" fill="#060615" />
+  <g transform="translate(40,28)">
+    <text x="20" y="40" fill="#7ef3ff" font-size="20" font-family="Inter, sans-serif">Reminders — Sci‑Fi Theme</text>
+  </g>
+
+  <g transform="translate(40,100)">
+    <rect width="1120" height="120" rx="12" fill="#0F1530"/>
+    <text x="20" y="36" fill="#CDEFFF" font-size="12">Monthly extra due: Rahul — 2026-09-01</text>
+    <text x="20" y="72" fill="#fff" font-size="20">Amount: ₹1,000</text>
+  </g>
+</svg>

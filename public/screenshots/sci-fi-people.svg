@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0" stop-color="#04061A"/>
+      <stop offset="1" stop-color="#091224"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="640" fill="url(#g1)" />
+  <g transform="translate(40,28)">
+    <rect width="1120" height="64" rx="10" fill="#0B1024" opacity="0.6"/>
+    <text x="20" y="40" fill="#7ef3ff" font-size="20" font-family="Inter, sans-serif">People — Sci‑Fi Theme</text>
+    <rect x="940" y="12" width="160" height="40" rx="8" fill="#7ef3ff"/>
+    <text x="1000" y="38" fill="#04061A" font-size="14" font-family="Inter, sans-serif" font-weight="700" text-anchor="middle">Add Person</text>
+  </g>
+
+  <g transform="translate(40,110)">
+    <rect x="0" y="0" width="320" height="120" rx="12" fill="#0F1530" stroke="#7ef3ff" stroke-opacity="0.06"/>
+    <text x="20" y="28" fill="#CDEFFF" font-size="12">Person</text>
+    <text x="20" y="72" fill="#FFFFFF" font-size="28" font-family="monospace">Rahul</text>
+  </g>
+
+  <g transform="translate(400,110)">
+    <rect width="720" height="420" rx="12" fill="#07102a" opacity="0.6"/>
+    <text x="20" y="28" fill="#7ef3ff" font-size="16">List of People</text>
+    <g transform="translate(20,48)">
+      <g transform="translate(0,0)">
+        <rect width="680" height="56" rx="8" fill="#0b1230" opacity="0.4"/>
+        <text x="60" y="34" fill="#fff" font-size="14">Rahul · 2 records</text>
+      </g>
+      <g transform="translate(0,72)">
+        <rect width="680" height="56" rx="8" fill="#0b1230" opacity="0.35"/>
+        <text x="60" y="34" fill="#fff" font-size="14">Priya · 1 record</text>
+      </g>
+    </g>
+  </g>
+</svg>
