@@ -46,6 +46,18 @@ export function useTransactions() {
   });
 }
 
+export function useUser() {
+  const query = useQuery({
+    queryKey: ["auth-user"],
+    queryFn: async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw new Error(error.message);
+      return data.user;
+    },
+  });
+  return { user: query.data ?? null, isLoading: query.isLoading };
+}
+
 export function useTracker() {
   const people = usePeople();
   const records = useRecords();
@@ -56,6 +68,11 @@ export function useTracker() {
     transactions: transactions.data ?? [],
     isLoading: people.isLoading || records.isLoading || transactions.isLoading,
     error: people.error || records.error || transactions.error,
+    refetch: () => {
+      void people.refetch();
+      void records.refetch();
+      void transactions.refetch();
+    },
   };
 }
 
