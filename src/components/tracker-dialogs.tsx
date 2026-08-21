@@ -123,6 +123,7 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
     transaction_type: "monthly_extra" as TxnType,
     person_id: "",
     money_record_id: "",
+    related_record_id: "",
     amount: "",
     transaction_date: todayISO(),
     notes: "",
@@ -184,6 +185,7 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
       transaction_type: seed?.type ?? "monthly_extra",
       person_id: seed?.personId ?? "",
       money_record_id: rec ?? "",
+      related_record_id: "",
       amount: "",
       transaction_date: todayISO(),
       notes: "",
@@ -197,6 +199,7 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
       transaction_type: txn.transaction_type,
       person_id: txn.person_id,
       money_record_id: txn.money_record_id,
+      related_record_id: (txn as any).related_record_id ?? "",
       amount: String(txn.amount),
       transaction_date: txn.transaction_date,
       notes: txn.notes ?? "",
@@ -340,8 +343,19 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
 
   async function submitPayment(force = false) {
     const amount = parseAmount(paymentForm.amount);
-    if (!paymentForm.money_record_id) {
+    const isAdvanceOrAdjustment = [
+      "advance_given",
+      "advance_received",
+      "principal_adjustment",
+      "extra_adjustment",
+    ].includes(paymentForm.transaction_type);
+
+    if (!isAdvanceOrAdjustment && !paymentForm.money_record_id) {
       toast.error("Choose a money record");
+      return;
+    }
+    if (!paymentForm.person_id) {
+      toast.error("Choose a person");
       return;
     }
     if (amount <= 0) {
@@ -353,14 +367,14 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const record = records.find((r) => r.id === paymentForm.money_record_id);
-    if (!record) {
+    const record = records.find((r) => r.id === paymentForm.money_record_id) ?? null;
+    if (!isAdvanceOrAdjustment && !record) {
       toast.error("Record not found");
       return;
     }
 
     // Principal overpayment confirmation
-    if (paymentForm.transaction_type === "principal" && !force) {
+    if (paymentForm.transaction_type === "principal" && !force && record) {
       const s = summarise(record, transactions.filter((t) => t.id !== txnEdit?.id));
       if (amount > s.remainingPrincipal) {
         setConfirm({
@@ -376,10 +390,10 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
     }
 
     // Duplicate monthly-extra detection (same record + same YYYY-MM)
-    if (paymentForm.transaction_type === "monthly_extra" && !force) {
+    if (paymentForm.transaction_type === "monthly_extra" && paymentForm.money_record_id && !force) {
       const period = paymentForm.transaction_date.slice(0, 7); // YYYY-MM
       const dup = transactions.some(
-        (t) => t.money_record_id === record.id && t.transaction_type === "monthly_extra" && t.period === period && t.id !== txnEdit?.id,
+        (t) => t.money_record_id === paymentForm.money_record_id && t.transaction_type === "monthly_extra" && t.period === period && t.id !== txnEdit?.id,
       );
       if (dup) {
         setConfirm({
@@ -394,16 +408,17 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Prepare values to save; include period where relevant
+    // Prepare values to save; include period and related_record_id where relevant
     const values: Record<string, unknown> = {
-      money_record_id: record.id,
-      person_id: record.person_id,
+      person_id: paymentForm.person_id,
       transaction_type: paymentForm.transaction_type,
       amount,
       transaction_date: paymentForm.transaction_date,
       notes: paymentForm.notes.trim() || null,
     };
-    if (paymentForm.transaction_type === "monthly_extra") {
+    if (paymentForm.money_record_id) values.money_record_id = paymentForm.money_record_id;
+    if (paymentForm.related_record_id) values.related_record_id = paymentForm.related_record_id;
+    if (paymentForm.transaction_type === "monthly_extra" && paymentForm.money_record_id) {
       values.period = paymentForm.transaction_date.slice(0, 7);
     }
 
@@ -413,29 +428,33 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
     });
 
     // Keep the demand status in step with the principal balance.
-    if (paymentForm.transaction_type === "principal") {
-      const after = summarise(record, [
-        ...transactions.filter((t) => t.id !== txnEdit?.id),
-        {
-          id: "temp",
-          money_record_id: record.id,
-          person_id: record.person_id,
-          transaction_type: "principal",
-          amount,
-          transaction_date: paymentForm.transaction_date,
-          notes: null,
-          is_demo: false,
-          created_at: new Date().toISOString(),
-        } as Transaction,
-      ]);
+    if (paymentForm.transaction_type === "principal" && paymentForm.money_record_id) {
+      const after = summarise(
+        records.find((r) => r.id === paymentForm.money_record_id)!,
+        [
+          ...transactions.filter((t) => t.id !== txnEdit?.id),
+          {
+            id: "temp",
+            money_record_id: paymentForm.money_record_id,
+            person_id: paymentForm.person_id,
+            transaction_type: "principal",
+            amount,
+            transaction_date: paymentForm.transaction_date,
+            notes: null,
+            is_demo: false,
+            created_at: new Date().toISOString(),
+          } as Transaction,
+        ],
+      );
+      const recordForDemand = records.find((r) => r.id === paymentForm.money_record_id)!;
       const next =
         after.remainingPrincipal <= 0
           ? "fully_paid"
-          : record.principal_demand_status === "demanded" || record.principal_demand_status === "partially_paid"
+          : recordForDemand.principal_demand_status === "demanded" || recordForDemand.principal_demand_status === "partially_paid"
           ? "partially_paid"
-          : record.principal_demand_status;
-      if (next !== record.principal_demand_status) {
-        await saveRecord.mutateAsync({ id: record.id, values: { principal_demand_status: next } });
+          : recordForDemand.principal_demand_status;
+      if (next !== recordForDemand.principal_demand_status) {
+        await saveRecord.mutateAsync({ id: recordForDemand.id, values: { principal_demand_status: next } });
       }
     }
 
@@ -686,6 +705,35 @@ export function TrackerDialogsProvider({ children }: { children: ReactNode }) {
                 </SelectContent>
               </Select>
             </Field>
+
+            {/* Related record (optional) for advances/adjustments */}
+            {[
+              "advance_given",
+              "advance_received",
+              "principal_adjustment",
+              "extra_adjustment",
+            ].includes(paymentForm.transaction_type) ? (
+              <div className="sm:col-span-2">
+                <Field label="Related record (optional)">
+                  <Select
+                    value={paymentForm.related_record_id}
+                    onValueChange={(v) => setPaymentForm({ ...paymentForm, related_record_id: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Link to a record (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {personRecords.map((r) => (
+                        <SelectItem key={r.id} value={r.id}>
+                          {personName(r.person_id)} · {MONEY_TYPE_LABEL[r.type]} · {inr(r.principal_amount)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+            ) : null}
+
             <Field label="Amount (₹) *">
               <Input
                 inputMode="decimal"
