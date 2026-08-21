@@ -28,6 +28,8 @@ function PeoplePage() {
   const { people, records, transactions, isLoading } = useTracker();
   const dialogs = useDialogs();
   const [q, setQ] = useState("");
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const [removePersonId, setRemovePersonId] = useState("");
 
   const rows = useMemo(() => {
     const summaries = summariseAll(records, transactions);
@@ -46,6 +48,28 @@ function PeoplePage() {
       });
   }, [people, records, transactions, q]);
 
+  function openRemoveUI() {
+    setRemoveOpen(true);
+  }
+
+  function cancelRemove() {
+    setRemoveOpen(false);
+    setRemovePersonId("");
+  }
+
+  function confirmRemove() {
+    if (!removePersonId) {
+      // simple feedback
+      window.alert("Choose a person to remove");
+      return;
+    }
+    const person = people.find((p) => p.id === removePersonId);
+    if (!person) return;
+    // This will open the confirmation dialog from the dialogs provider
+    dialogs.deletePerson(person);
+    cancelRemove();
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -55,9 +79,39 @@ function PeoplePage() {
             A person can have many separate money records — each stays independent.
           </p>
         </div>
-        <Button className="rounded-full" onClick={() => dialogs.addPerson()}>
-          <Plus className="size-4" /> Add Person
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button className="rounded-full" onClick={() => dialogs.addPerson()}>
+            <Plus className="size-4" /> Add Person
+          </Button>
+
+          {/* Remove person inline UI */}
+          {!removeOpen ? (
+            <Button variant="ghost" className="rounded-full" onClick={openRemoveUI}>
+              Remove Person
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <select
+                value={removePersonId}
+                onChange={(e) => setRemovePersonId(e.target.value)}
+                className="rounded-md border px-2 py-1 bg-background"
+              >
+                <option value="">Select person</option>
+                {people.map((p: any) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+              <Button variant="destructive" onClick={confirmRemove}>
+                Remove
+              </Button>
+              <Button variant="ghost" onClick={cancelRemove}>
+                Cancel
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="relative max-w-sm">
@@ -108,9 +162,7 @@ function PeoplePage() {
                   <p className="money-figure mt-1 font-semibold text-owe">{inr(owe)}</p>
                 </div>
                 <div className="rounded-lg bg-owed-soft p-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-owed">
-                    Owes me
-                  </p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-owed">Owes me</p>
                   <p className="money-figure mt-1 font-semibold text-owed">{inr(owed)}</p>
                 </div>
               </div>
