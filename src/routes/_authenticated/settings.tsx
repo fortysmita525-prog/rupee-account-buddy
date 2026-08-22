@@ -30,7 +30,7 @@ function SettingsPage() {
       <section className="surface p-4">
         <h2 className="text-lg font-medium">Profile</h2>
         <p className="mt-2 text-sm">Email: {user?.email ?? "—"}</p>
-        <p className="text-sm">Name: {user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "—"}</p>
+        <p className="text-sm">Name: {user?.user_metadata?.['full_name'] ?? user?.user_metadata?.['name'] ?? "—"}</p>
       </section>
 
       <section className="surface p-4">
